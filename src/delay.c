@@ -38,6 +38,11 @@ void delay_setup(void)
 	timer_one_shot_mode(TIM6);
 }
 
+void delay_deinit(void)
+{
+	rcc_periph_clock_disable(RCC_TIM6);
+}
+
 void delay_us(uint16_t us)
 {
 	TIM_ARR(TIM6) = us;

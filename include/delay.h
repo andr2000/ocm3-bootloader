@@ -29,6 +29,11 @@ extern "C" {
 	void delay_setup(void);
 
 	/**
+	 * Deinitialize the timers used for delays.
+	 */
+	void delay_deinit(void);
+
+	/**
 	 * busy wait for a number of usecs.
 	 * @param us number of usecs to delay.
 	 */
