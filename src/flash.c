@@ -12,6 +12,7 @@
 #include <libopencm3/stm32/flash.h>
 
 #include "flash.h"
+#include "uart.h"
 
 /* Start address of the user application. */
 #define FLASH_APP_START_ADDRESS ((uint32_t)0x08004000u)
@@ -111,6 +112,7 @@ void flash_jump_to_app(void)
   /* Function pointer to the address of the user application. */
   fnc_ptr jump_to_app;
   jump_to_app = (fnc_ptr)(*(volatile uint32_t*) (FLASH_APP_START_ADDRESS+4u));
+  uart_deinit();
   /* Change the main stack pointer. */
   asm volatile("msr msp, %0"::"g"(*(volatile uint32_t *)FLASH_APP_START_ADDRESS));
   jump_to_app();
