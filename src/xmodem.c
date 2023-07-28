@@ -32,7 +32,7 @@ void xmodem_receive(void)
 
   x_first_packet_received = false;
   xmodem_packet_number = 1u;
-  xmodem_actual_flash_address = FLASH_APP_START_ADDRESS;
+  xmodem_actual_flash_address = flash_get_app_start();
 
   /* Loop until there isn't any error (or until we jump to the user application). */
   while (X_OK == status)
@@ -182,7 +182,7 @@ static xmodem_status xmodem_handle_packet(uint8_t header)
   /* If it is the first packet, then erase the memory. */
   if ((X_OK == status) && (false == x_first_packet_received))
   {
-    if (FLASH_OK == flash_erase(FLASH_APP_START_ADDRESS))
+    if (FLASH_OK == flash_erase(flash_get_app_start()))
     {
       x_first_packet_received = true;
     }

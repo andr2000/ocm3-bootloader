@@ -10,12 +10,6 @@
 #ifndef FLASH_H_
 #define FLASH_H_
 
-#include "stm32f1xx_hal.h"
-
-/* Start and end addresses of the user application. */
-#define FLASH_APP_START_ADDRESS ((uint32_t)0x08008000u)
-#define FLASH_APP_END_ADDRESS   ((uint32_t)FLASH_BANK1_END-0x10u) /**< Leave a little extra space at the end. */
-
 /* Status report for the functions. */
 typedef enum {
   FLASH_OK              = 0x00u, /**< The action was successful. */
@@ -24,6 +18,8 @@ typedef enum {
   FLASH_ERROR_READBACK  = 0x04u, /**< Writing was successful, but the content of the memory is wrong. */
   FLASH_ERROR           = 0xFFu  /**< Generic error. */
 } flash_status;
+
+uint32_t flash_get_app_start(void);
 
 flash_status flash_erase(uint32_t address);
 flash_status flash_write(uint32_t address, uint32_t *data, uint32_t length);
