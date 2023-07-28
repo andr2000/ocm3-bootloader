@@ -27,59 +27,66 @@ static xmodem_status xmodem_error_handler(uint8_t *error_number, uint8_t max_err
  */
 void xmodem_receive(void)
 {
-  volatile xmodem_status status = X_OK;
-  uint8_t error_number = 0u;
+	volatile xmodem_status status = X_OK;
+	uint8_t error_number = 0u;
 
-  x_first_packet_received = false;
-  xmodem_packet_number = 1u;
-  xmodem_actual_flash_address = flash_get_app_start();
+	x_first_packet_received = false;
+	xmodem_packet_number = 1u;
+	xmodem_actual_flash_address = flash_get_app_start();
 
-  /* Loop until there isn't any error (or until we jump to the user application). */
-  while (X_OK == status)
-  {
-    uint8_t header = 0x00u;
+	/*
+	 * Loop until there isn't any error (or until we jump
+	 * to the user application).
+	 */
+	while (X_OK == status) {
+		uint8_t header = 0x00u;
 
-    /* Get the header from UART. */
-    uart_status comm_status = uart_receive(&header, 1u);
+		/* Get the header from UART. */
+		uart_status comm_status = uart_receive(&header, 1u);
 
-    /* Spam the host (until we receive something) with ACSII "C", to notify it, we want to use CRC-16. */
-    if ((UART_OK != comm_status) && (false == x_first_packet_received))
-    {
-      (void)uart_transmit_ch(X_C);
-    }
-    /* Uart timeout or any other errors. */
-    else if ((UART_OK != comm_status) && (true == x_first_packet_received))
-    {
-      status = xmodem_error_handler(&error_number, X_MAX_ERRORS);
-    }
-    else
-    {
-      /* Do nothing. */
-    }
+		/*
+		 * Spam the host (until we receive something) with ACSII "C",
+		 * to notify it, we want to use CRC-16.
+		 */
+		if ((UART_OK != comm_status) &&
+		    (false == x_first_packet_received)) {
+			(void)uart_transmit_ch(X_C);
+		}
+		/* Uart timeout or any other errors. */
+		else if ((UART_OK != comm_status) &&
+		 	 (true == x_first_packet_received)) {
+			status = xmodem_error_handler(&error_number,
+						      X_MAX_ERRORS);
+		} else {
+			/* Do nothing. */
+		}
 
-    /* The header can be: SOH, STX, EOT and CAN. */
-    switch(header)
-    {
-      xmodem_status packet_status = X_ERROR;
-      /* 128 or 1024 bytes of data. */
-      case X_SOH:
-      case X_STX:
-        /* If the handling was successful, then send an ACK. */
-        packet_status = xmodem_handle_packet(header);
-        if (X_OK == packet_status)
-        {
-          (void)uart_transmit_ch(X_ACK);
-        }
-        /* If the error was flash related, then immediately set the error counter to max (graceful abort). */
-        else if (X_ERROR_FLASH == packet_status)
-        {
-          error_number = X_MAX_ERRORS;
-          status = xmodem_error_handler(&error_number, X_MAX_ERRORS);
-        }
-        /* Error while processing the packet, either send a NAK or do graceful abort. */
-        else
-        {
-          status = xmodem_error_handler(&error_number, X_MAX_ERRORS);
+		/* The header can be: SOH, STX, EOT and CAN. */
+		switch(header) {
+		xmodem_status packet_status = X_ERROR;
+		/* 128 or 1024 bytes of data. */
+		case X_SOH:
+		case X_STX:
+		/* If the handling was successful, then send an ACK. */
+		packet_status = xmodem_handle_packet(header);
+		if (X_OK == packet_status) {
+			(void)uart_transmit_ch(X_ACK);
+		}
+		/*
+                 * If the error was flash related, then immediately set the
+                 * error counter to max (graceful abort).
+                 */
+		else if (X_ERROR_FLASH == packet_status) {
+			error_number = X_MAX_ERRORS;
+			status = xmodem_error_handler(&error_number,
+						      X_MAX_ERRORS);
+		}
+		/*
+                 * Error while processing the packet, either send a NAK or
+                 * do graceful abort.
+                 */
+		else {
+			status = xmodem_error_handler(&error_number, X_MAX_ERRORS);
         }
         break;
       /* End of Transmission. */

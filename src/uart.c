@@ -4,9 +4,9 @@
 #include "delay.h"
 #include "uart.h"
 
-#define UART_PORT           USART3
-#define UART_TIMEOUT_US     1000
-#define UART_TO_DELTA_US    1
+#define UART_PORT		USART3
+#define UART_TIMEOUT_US		1000
+#define UART_TO_DELTA_US	1
 
 uart_status uart_setup(void)
 {
@@ -16,7 +16,7 @@ uart_status uart_setup(void)
 	rcc_periph_clock_enable(RCC_GPIOB);
 	rcc_periph_clock_enable(RCC_USART3);
 	gpio_set_mode(GPIOB, GPIO_MODE_OUTPUT_2_MHZ,
-			      GPIO_CNF_OUTPUT_ALTFN_PUSHPULL, GPIO_USART3_TX);
+		      GPIO_CNF_OUTPUT_ALTFN_PUSHPULL, GPIO_USART3_TX);
 #else
     #error UART_PORT must be defined!!
 #endif
@@ -30,21 +30,22 @@ uart_status uart_setup(void)
 
 	usart_enable(UART_PORT);
 
-    return UART_OK;
+	return UART_OK;
 }
 
 void uart_deinit(void)
 {
 	delay_deinit();
-    
+
 	usart_disable(UART_PORT);
 #if UART_PORT == USART3
-	gpio_set_mode(GPIOB, GPIO_MODE_INPUT, GPIO_CNF_INPUT_FLOAT, GPIO_USART3_TX);
+	gpio_set_mode(GPIOB, GPIO_MODE_INPUT, GPIO_CNF_INPUT_FLOAT,
+		      GPIO_USART3_TX);
 	rcc_periph_clock_disable(RCC_USART3);
 	rcc_periph_clock_disable(RCC_GPIOB);
 	rcc_periph_clock_disable(RCC_AFIO);
 #else
-    #error UART_PORT must be defined!!
+	#error UART_PORT must be defined!!
 #endif
 }
 
@@ -55,33 +56,37 @@ static int usart_is_recv_ready(uint32_t usart)
 
 uart_status uart_receive(uint8_t *data, uint16_t length)
 {
-    uint16_t to = UART_TIMEOUT_US;
+	uint16_t to = UART_TIMEOUT_US;
 
-    while (length--) {
-        while (to && !usart_is_recv_ready(UART_PORT)) {
-            delay_us(UART_TO_DELTA_US);
-            to -= UART_TO_DELTA_US;
-        }
-        if (!usart_is_recv_ready(UART_PORT))
-            return UART_ERROR;
-        *data++ = usart_recv(UART_PORT);
-    }
-    return UART_OK;
+	while (length--) {
+		while (to && !usart_is_recv_ready(UART_PORT)) {
+			delay_us(UART_TO_DELTA_US);
+			to -= UART_TO_DELTA_US;
+		}
+		if (!usart_is_recv_ready(UART_PORT)) {
+			return UART_ERROR;
+		}
+		*data++ = usart_recv(UART_PORT);
+	}
+
+	return UART_OK;
 }
 
 uart_status uart_transmit_str(uint8_t *data)
 {
-    while ('\0' != *data) {
-        uart_status ret = uart_transmit_ch(*data++);
-        if (ret != UART_OK) {
-            return ret;
-        }
-    }
-    return UART_OK;
+	while ('\0' != *data) {
+		uart_status ret = uart_transmit_ch(*data++);
+		if (ret != UART_OK) {
+			return ret;
+		}
+	}
+
+	return UART_OK;
 }
 
 uart_status uart_transmit_ch(uint8_t data)
 {
-    usart_send_blocking(UART_PORT, data);
-    return UART_OK;
+	usart_send_blocking(UART_PORT, data);
+	return UART_OK;
 }
+
