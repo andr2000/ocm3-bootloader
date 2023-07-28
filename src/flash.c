@@ -15,7 +15,7 @@
 #include "uart.h"
 
 /* Start address of the user application. */
-#define FLASH_APP_START_ADDRESS ((uint32_t)0x08004000u)
+#define FLASH_APP_START_ADDRESS ((uint32_t)0x08001000u)
 
 #define FLASH_PAGE_SHIFT        12
 #define FLASH_PAGE_SIZE         (1U << FLASH_PAGE_SHIFT)
