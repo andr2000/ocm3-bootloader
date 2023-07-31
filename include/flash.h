@@ -12,11 +12,11 @@
 
 /* Status report for the functions. */
 typedef enum {
-  FLASH_OK              = 0x00u, /**< The action was successful. */
-  FLASH_ERROR_SIZE      = 0x01u, /**< The binary is too big. */
-  FLASH_ERROR_WRITE     = 0x02u, /**< Writing failed. */
-  FLASH_ERROR_READBACK  = 0x04u, /**< Writing was successful, but the content of the memory is wrong. */
-  FLASH_ERROR           = 0xFFu  /**< Generic error. */
+	FLASH_OK              = 0x00u, /**< The action was successful. */
+	FLASH_ERROR_SIZE      = 0x01u, /**< The binary is too big. */
+	FLASH_ERROR_WRITE     = 0x02u, /**< Writing failed. */
+	FLASH_ERROR_READBACK  = 0x04u, /**< Writing was successful, but the content of the memory is wrong. */
+	FLASH_ERROR           = 0xFFu  /**< Generic error. */
 } flash_status;
 
 uint32_t flash_get_app_start(void);

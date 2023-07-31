@@ -4,7 +4,7 @@
 #include "delay.h"
 #include "uart.h"
 
-#define UART_PORT		USART3
+#define UART_PORT			USART3
 #define UART_TIMEOUT_US		1000
 #define UART_TO_DELTA_US	1
 

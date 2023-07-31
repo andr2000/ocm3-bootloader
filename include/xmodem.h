@@ -57,12 +57,12 @@
 
 /* Status report for the functions. */
 typedef enum {
-  X_OK            = 0x00u, /**< The action was successful. */
-  X_ERROR_CRC     = 0x01u, /**< CRC calculation error. */
-  X_ERROR_NUMBER  = 0x02u, /**< Packet number mismatch error. */
-  X_ERROR_UART    = 0x04u, /**< UART communication error. */
-  X_ERROR_FLASH   = 0x08u, /**< Flash related error. */
-  X_ERROR         = 0xFFu  /**< Generic error. */
+	X_OK            = 0x00u, /**< The action was successful. */
+	X_ERROR_CRC     = 0x01u, /**< CRC calculation error. */
+	X_ERROR_NUMBER  = 0x02u, /**< Packet number mismatch error. */
+	X_ERROR_UART    = 0x04u, /**< UART communication error. */
+	X_ERROR_FLASH   = 0x08u, /**< Flash related error. */
+	X_ERROR         = 0xFFu  /**< Generic error. */
 } xmodem_status;
 
 void xmodem_receive(void);

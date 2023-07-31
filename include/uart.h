@@ -4,8 +4,8 @@
 #include <libopencm3/stm32/usart.h>
 
 typedef enum {
-  UART_OK     = 0,
-  UART_ERROR  = 1
+	UART_OK    = 0,
+	UART_ERROR = 1
 } uart_status;
 
 uart_status uart_setup(void);
